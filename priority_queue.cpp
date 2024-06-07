@@ -12,7 +12,7 @@ priority_queue::priority_queue(int initial_values[], int init_length) {
         data_length++;
     }
     // heapify
-    max_heapify_down(0);
+    max_heapify_up(0);
 }
 
 void priority_queue::insert(int new_key) {
@@ -20,7 +20,7 @@ void priority_queue::insert(int new_key) {
     data.push_back(new_key);
     data_length++;
     // heapify up
-    max_heapify_down(0);
+    max_heapify_up(0);
 }
 
 int priority_queue::delete_max() {
@@ -40,19 +40,6 @@ int priority_queue::delete_max() {
 }
 
 void priority_queue::max_heapify_up(int index) {
-    int parent_index;
-    for (int i = 1; i < data_length; i++) {
-        parent_index = (i % 2 == 0) ? floor((i - 2)/2) : floor((i - 1)/2);
-
-        if (data[parent_index] < data[i]) {
-            int old_data = data[parent_index];
-            data[parent_index] = data[i];
-            data[i] = old_data;
-        }
-    }
-}
-
-void priority_queue::max_heapify_down(int index) {
     int first_parent_index = ceil((data_length-1)/2.0) - 1.0;
     for (int i = first_parent_index; i >= 0; i--) {
         int largest_child_index;
@@ -73,6 +60,29 @@ void priority_queue::max_heapify_down(int index) {
 
             if (largest_child_index <= first_parent_index) {
                 i = largest_child_index + 1;
+            }
+        }
+    }
+}
+
+void priority_queue::max_heapify_down(int index) {
+    if (index * 2 + 1 < data_length) { 
+        if (index * 2 + 2 < data_length) {
+            int largest_number_index = (data[index * 2 + 1] > data[index * 2 + 2]) ? index * 2 + 1 : index * 2 + 2;
+
+            if (data[largest_number_index] > data[index]) {
+                int old_data = data[index];
+                data[index] = data[largest_number_index];
+                data[largest_number_index] = old_data;
+
+                max_heapify_down(largest_number_index);
+            }
+        }
+        else {
+            if (data[index * 2 + 1] > data[index]) {
+                int old_data = data[index];
+                data[index] = data[index * 2 + 1];
+                data[index * 2 + 1] = old_data;
             }
         }
     }
